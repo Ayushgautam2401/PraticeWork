@@ -5,32 +5,15 @@ import { getPageState } from "../redux/Selector/Selector";
 
 function Pages() {
   const [currentPage,setCurrentPage]=useState(1);
-  const [records,setRecords]=useState([]);
+  // const [records,setRecords]=useState([]);
   const dispatch = useDispatch();
-  const record = useSelector((state)=> {
-    console.log("state",state);
-   return state?.postReducers?.records || []
-  });
+  const pageState = useSelector(getPageState(currentPage));
   useEffect(()=>{
-   dispatch(getPosts(currentPage,(data)=>{
-     console.log("response",data);
-     setRecords(data);
-   }))
+    dispatch(getPosts(currentPage))
   },[currentPage])
-
-  useEffect(()=>{
- console.log("records",records);
-  },[record])
   return (
         <div >
-           {
-         records.map((post)=>(
-              <div key={post.id}>
-                {post.title}
-                </div>
-            ))
-          }
-
+      {}
         <button onClick={()=>{
           setCurrentPage((prev)=>prev-1 < 0 ? 1 : prev-1);
         }}>prev</button>

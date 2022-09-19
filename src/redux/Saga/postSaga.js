@@ -5,16 +5,14 @@ import { fetchAPI } from '../API';
 
 
 
-function* fetchPosts ({callback,pageNo=1}) {
+function* fetchPosts (action) {
+	const {payload: {pageNo}} = action;
 	try {
 		let apiUrl = `/Data/page${pageNo}.json`;
-		const data = yield call(fetchAPI,apiUrl);
-		console.log("data<>>",data);
-		callback(data?.records);
-		yield put(getPostsSuccess({payload:data}));
+		const data = yield call(fetchAPI,apiUrl,"get");
+		yield put(getPostsSuccess(data));
 	} catch (error) {
-		yield put(getPostsFail({  payload: error.message }));
-		console.log(error.message);
+		yield put(getPostsFail({error: error.message }));
 	}
 };
 

@@ -4,18 +4,17 @@ export const FETCH_POST_FAILED = 'FETCH_POST_FAILED';
 
 
 
-export const getPosts = (pageNo,callback) => {
+export const getPosts = (pageNo) => {
 	return {
 	  type: FETCH_POST_REQUEST,
-	  callback,
-	  pageNo
+	  payload:{pageNo}
 	};
   };
   
-  export const getPostsSuccess = (posts) => {
+  export const getPostsSuccess = (payload) => {
 	return {
 	  type: FETCH_POST_SUCCESS,
-	  payload: posts,
+	  payload
 	};
   };
   

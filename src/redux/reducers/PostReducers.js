@@ -1,46 +1,62 @@
-import * as actions from '../constants/PostConstants';
+import { FETCH_POST_REQUEST ,FETCH_POST_FAILED,FETCH_POST_SUCCESS } from '../actions/PostActions'; 
 import { forEach ,map} from 'lodash';
-const initialState = {
-	totalElements:30,
-	// posts:[],
-	feching:{
-		"0":false,
-		"1":false,
-		"2":false
-	},
-	ids:[],
-	records:[]
+const INITIAL_STATE = {
+	totalElements: 0,
+	fetching:{},
+	records:{},
+	ids:{}
 };
 
-export const PostReducers = (state = initialState, action) => {
-	switch (action.type) {
-		case actions.FETCH_POST_REQUEST:
+ const PostReducers = (state = INITIAL_STATE, action) => {
+	const {type, payload} = action;
+	const {pageNo, records} = payload || {};
+	switch (type) {
+		case FETCH_POST_REQUEST:
 			return {
 				...state,
-				// fetching:{
-				// 	0:false
-				// }
+				fetching: {
+					...state.fetching,
+					[pageNo]: true
+				}
 			};
-		case actions.FETCH_POST_SUCCESS:
-			console.log(action.payload,"action payload");
-            // const raw ={}
-			// forEach(posts, (item) => {
-            //     raw[posts.id] = item;
-            // });
-			return {
+		case FETCH_POST_SUCCESS:
+           const pageIds = [];
+		   const rawRecords = {};
+		  records?.forEach((item) =>{
+			const {id} = item;
+			pageIds.push(id)
+			rawRecords[id] = item;
+		   });
+		   console.log(rawRecords)
+			return { 
 				...state,
-				loading: false,
-				posts: action.payload.posts,
-				records:action?.payload?.records
-				// ids: map(data, "id")
+				fetching: {
+					...state.fetching,
+					[pageNo]: false,
+				},
+				records:{
+					...state.records,
+					...rawRecords
+				},
+				ids: {
+					...state.ids,
+					[pageNo]: pageIds
+				},
+				totalElements: payload.totalElements
 			};
-		case actions.FETCH_POST_FAILED:
+			
+		case FETCH_POST_FAILED:
 			return {
 				...state,
-				loading: false,
+				fetching: {
+					...state.fetching,
+					[pageNo]: false,
+				},
 				error: action.payload,
 			};
 		default:
 			return state;
 	}
 };
+
+export default PostReducers
